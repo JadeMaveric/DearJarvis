@@ -1,0 +1,16 @@
+.App
+{
+  margin-top: 20px;
+}
+
+.summary
+{
+  text-align: center;
+}
+
+.temp
+{
+  height: 200px;
+  background-color: rgb(151, 151, 151);
+}
+/* can delete this one later */
