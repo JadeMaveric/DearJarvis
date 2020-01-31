@@ -25,9 +25,12 @@ class HelloWorld(Resource):
 class Note(Resource):
     def get(self, note_id):
         note = keep.get(note_id)
+        # Run NLP Sentiment analysis on note, give it a score
+        # score = ______
         return {
             'title': note.title,
             'text': note.text,
+            #'score': score, 
             'timestamps': {
                 'create': note.timestamps.created.timetuple(),
                 'edited': note.timestamps.edited.timetuple()
