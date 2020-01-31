@@ -4,6 +4,20 @@ import gkeepapi
 
 import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+account = {
+	user: 'introspecthack@gmail.com',
+	password: 'Kyjus2020',
+}
+
+vectorizer = TfidfVectorizer()
+def getKeyWords(notes):
+	corpus = []
+	corpus.append(note.text) for note in notes
+	model = vectorizer.fit_transform(corpus)
+	return vectorizer.get_feature_names(), model	# also returns model
+
 nltk.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
 
@@ -15,7 +29,7 @@ api = Api(app)
 
 # Register the user
 keep = gkeepapi.Keep()
-keep.login('introspecthack@gmail.com', 'Kyjus2020')
+keep.login(account.user, account.password)
 
 notes = []
 def refresh():
