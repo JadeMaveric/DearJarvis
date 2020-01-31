@@ -9,12 +9,10 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <div className="top-cont">
-          <h3 >Let's take a look<br /><span className="tab">at your {this.state.unit}.</span></h3>
+        <div class="jumbotron jumbotron-fluid">
+            <h1 class="display-4">Let's take a look<br />&emsp;&emsp;at your {this.state.unit}.</h1>
         </div>
         <div className=" container">
-          <h4 className="summary ">Looks like someone's {this.state.unit} was awesome!</h4>
-          <br />
           <h4>Let's look at your mood for the {this.state.unit}</h4>
           <div className="temp">
             { //FOR SHAWN

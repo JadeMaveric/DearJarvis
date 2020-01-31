@@ -5,30 +5,16 @@
   font-family: 'Poppins', sans-serif;
 }
 
-.top-cont{
+.jumbotron{
     background-color: rgb(89, 89, 179);
-    min-height: 20em;
-    z-index: -1;
-    overflow: hidden;
+    padding-left: 7em;
+    padding-bottom: 0.1em;
     box-shadow: 0em 1em 1em #c2c2c2;
 }
 
-.tab {
-    position:absolute;left:2em; 
-}
-
-
-h3{
-    margin-left: 1.8em;
-    margin-top: 2em;
+.display-4{
     color: white;
-    z-index: 0;
-    position: relative;
-    width: 50%;
-    font-size: 4rem;
-    font-weight: 600;
 }
-
 
 
 
