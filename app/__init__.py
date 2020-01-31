@@ -2,6 +2,10 @@ from flask import Flask
 from flask_restful import Resource, Api
 import gkeepapi
 
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+nltk.download('vader_lexicon')
+sid = SentimentIntensityAnalyzer()
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -26,11 +30,11 @@ class Note(Resource):
     def get(self, note_id):
         note = keep.get(note_id)
         # Run NLP Sentiment analysis on note, give it a score
-        # score = ______
+        score = sid.polarity_score(text)
         return {
             'title': note.title,
             'text': note.text,
-            #'score': score, 
+            'score': score, 
             'timestamps': {
                 'create': note.timestamps.created.timetuple(),
                 'edited': note.timestamps.edited.timetuple()
