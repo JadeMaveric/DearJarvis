@@ -7,11 +7,13 @@ account = {
 	password: 'Kyjus2020',
 }
 
+import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer()
 def getKeyWords(notes):
 	corpus = []
-	corpus.append(note.text) for note in notes
+	for note in notes:
+		corpus.append(note.text) 
 	model = vectorizer.fit_transform(corpus)
 	return vectorizer.get_feature_names(), model	# also returns model
 
