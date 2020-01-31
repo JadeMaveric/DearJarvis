@@ -50,7 +50,7 @@ class App extends React.Component {
           </div>
           <br />
           <h4>We noticed that you care about these a lot</h4>
-          <div className="temp">
+          <div className="desire-chart">
             <Chart
               width={'500px'}
               height={'300px'}
