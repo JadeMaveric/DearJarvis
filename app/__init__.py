@@ -7,8 +7,8 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 account = {
-	user: 'introspecthack@gmail.com',
-	password: 'Kyjus2020',
+	'user': 'introspecthack@gmail.com',
+	'password': 'Kyjus2020',
 }
 
 vectorizer = TfidfVectorizer()
@@ -30,7 +30,7 @@ api = Api(app)
 
 # Register the user
 keep = gkeepapi.Keep()
-keep.login(account.user, account.password)
+keep.login(account['user'], account['password'])
 
 notes = []
 def refresh():
