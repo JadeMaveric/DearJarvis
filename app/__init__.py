@@ -2,6 +2,19 @@ from flask import Flask
 from flask_restful import Resource, Api
 import gkeepapi
 
+account = {
+	user: 'introspecthack@gmail.com',
+	password: 'Kyjus2020',
+}
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+vectorizer = TfidfVectorizer()
+def getKeyWords(notes):
+	corpus = []
+	corpus.append(note.text) for note in notes
+	model = vectorizer.fit_transform(corpus)
+	return vectorizer.get_feature_names(), model	# also returns model
+
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')
 sid = SentimentIntensityAnalyzer()
@@ -11,7 +24,7 @@ api = Api(app)
 
 # Register the user
 keep = gkeepapi.Keep()
-keep.login('introspecthack@gmail.com', 'Kyjus2020')
+keep.login(account.user, account.password)
 
 # Get relevant notes
 class Refresh(Resource):
