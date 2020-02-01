@@ -24,9 +24,11 @@ class App extends React.Component {
         data[i].timestamp = new Date(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]);
       }
       this.setState({ timeline: data });
-      // console.log(this.state.timeline);
+      console.log(this.state.timeline);
     })
     .catch(console.log)
+
+    
   }
 
   render() {
