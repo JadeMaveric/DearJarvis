@@ -22,15 +22,17 @@ def trainModel(notes):
 	return vectorizer.get_feature_names(), model	# also returns model
 
 nltk.download('vader_lexicon')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 sid = SentimentIntensityAnalyzer()
 
 def calcScore(text):
     return sid.polarity_scores(text)
 
 # get a rank of all the keywords depending on their intersections
-def getKeyWords(notes, positive=True):
+def getKeyWords(corpus, positive=True):
 	# step 0: score every note depending on the analysis
-	score = [[calcScore(note.text), note.text] for note in notes]
+	score = [[calcScore(note.text), note.text] for note in corpus]
 	# step 1: get all of the notes of a specific compound category
 	if positive == True:
 		texts = [d for d in sorted(score, key=lambda item: item[0]['compound']) if d[0]['compound'] > 0]
@@ -41,17 +43,18 @@ def getKeyWords(notes, positive=True):
 	# step 2.2: then find intersects and rank accordingly
 	tokenized_texts = [nltk.pos_tag(nltk.word_tokenize(text[1])) for text in texts]
 	# added a special filter out everything except certain POS tags(i.e only nouns).
+	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.']
 	pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
 	ranked_tokens = {}
 	for text in tokenized_texts:
 		for token in text:
-			if token[1] in pos_filter:
-				if token in ranked_tokens:
-					ranked_tokens[token] += 1
+			if token[1] in pos_filter and token[0] not in word_filter:
+				if token[0] in ranked_tokens:
+					ranked_tokens[token[0]] += 1
 				else:
-					ranked_tokens[token] = 1
+					ranked_tokens[token[0]] = 1
 	# pass the tokens based on rank, and also pass the number of posts that were used to achieve this evaluation
-	return [d for d in sorted(ranked_tokens.items(), key=lambda item: item[1])], len(texts)
+	return {'keywords': [d for d in sorted(ranked_tokens.items(), key=lambda item: item[1], reverse=True)], 'notesScanned': len(texts)}
 
 app = Flask(__name__)
 CORS(app)
@@ -64,7 +67,7 @@ keep.login(account['user'], account['password'])
 notes = []
 def refresh():
     keep.sync()
-    gnotes = keep.find(labels=[keep.findLabel('introspect')])
+    gnotes = keep.all()#find(labels=[keep.findLabel('AnneFrank')])
     for note in gnotes:
         notes.append(note)
     print(notes)
@@ -110,11 +113,17 @@ class Timeline(Resource):
         print(timeline)
         return timeline
 
+class Keywords(Resource):
+    def get(self):
+        # Returns an object of keyword:occurences
+        return {'positive': getKeyWords(notes), 'negative': getKeyWords(notes, positive=False)}
+
 api.add_resource(HelloWorld, '/')
 api.add_resource(Refresh, '/refresh')
 
 api.add_resource(Note, '/notes/<string:note_id>')
 api.add_resource(Timeline, '/notes/timeline')
+api.add_resource(Keywords, '/notes/keywords')
 
 # Refresh the list
 refresh()
