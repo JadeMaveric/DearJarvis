@@ -2,7 +2,8 @@ import React from 'react';
 import { Chart } from 'react-google-charts';
 import Happy from './udhappy.png';
 import Angry from './udsad.png';
-
+import GoodWeek from './weekMoodGood.png';
+import BadWeek from './weekMoodBad.png';
 import Modal from 'react-awesome-modal';
 import './App.css';
 
@@ -11,12 +12,27 @@ class App extends React.Component {
     unit: 'week',
     timeline: [],
     popupVisible: true,
+    weekMoodScore: 0,
+    weekMoodPositive: true,
+    weekMoodText: '',
+    weekMoodImageURL: '',
   }
 
   closeModal() {
     this.setState({
       popupVisible: false
     });
+  }
+
+  getWeekMood(arr) {
+    arr.forEach()
+    if(this.state.weekMoodPositive)
+    {
+      this.setState({weekMoodText: 'Looks like someone had an awesome week!', weekMoodImageURL: GoodWeek});
+    }
+    else{
+      this.setState({weekMoodText: 'I think you need cheering up!', weekMoodImageURL: BadWeek});
+    }
   }
   componentDidMount() {
     fetch('http://192.168.12.1:5000/notes/timeline')
@@ -30,6 +46,7 @@ class App extends React.Component {
         // console.log(this.state.timeline);
       })
       .catch(console.log)
+      this.getWeekMood();
   }
 
   render() {
@@ -38,13 +55,15 @@ class App extends React.Component {
       let point = [note.timestamp, note.score.compound]
       values.push(point);
     });
+    
     return (
       <div className="App">
         <Modal visible={this.state.popupVisible} width="600" effect="fadeInUp" onClickAway={() => this.closeModal()}>
+
           <div class="popup">
-            <h4>Looks like someone had an awesome week!</h4>
-            <p>Bruh</p>
-            <a href="javascript:void(0);" onClick={() => this.closeModal()}>See your mental health stats</a>
+            <h4>{this.state.weekMoodText}</h4>
+            <img width="400px" src = {this.state.weekMoodImageURL} />
+            <a href="javascript:void(0);" onClick={() => this.closeModal()}><p>See your mental health stats</p></a>
           </div>
         </Modal>
         <div class="jumbotron jumbotron-fluid">
