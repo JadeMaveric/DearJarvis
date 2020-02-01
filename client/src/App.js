@@ -25,8 +25,24 @@ class App extends React.Component {
   }
 
   getWeekMood(arr) {
-    arr.forEach()
-    if(this.state.weekMoodPositive)
+    var aggregate = 0;
+    let moodPositive = true;
+    for(let i=1; i< arr.length; i++)
+    {
+      aggregate = arr[i] + aggregate/2;
+    }
+    aggregate = aggregate / arr.length;
+    this.setState({weekMoodScore: aggregate});
+    if(aggregate>=0)
+    {
+      moodPositive = true;
+    }
+    else
+    {
+      moodPositive = false;
+    }
+    this.setState({weekMoodPositive: moodPositive});
+    if(moodPositive)
     {
       this.setState({weekMoodText: 'Looks like someone had an awesome week!', weekMoodImageURL: GoodWeek});
     }
@@ -35,27 +51,34 @@ class App extends React.Component {
     }
   }
   componentDidMount() {
+    console.log("Requesting timeline data")
     fetch('http://192.168.12.1:5000/notes/timeline')
-      .then(res => res.json())
-      .then((data) => {
-        for (let i = 0; i < data.length; i++) {
-          let arr = data[i].timestamp;
-          data[i].timestamp = new Date(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
-        }
-        this.setState({ timeline: data });
-        // console.log(this.state.timeline);
-      })
-      .catch(console.log)
-      this.getWeekMood();
+    .then( res => res.json() )
+    .then( (data) => {
+      for( let i=0; i <data.length; i++ ) {
+        let arr = data[i].timestamp;
+        data[i].timestamp = new Date(arr[0],arr[1]-1,arr[2]);
+      }
+      this.setState({ timeline: data });
+      console.log(this.state.timeline);
+    })
+    .catch(console.log)
+    
+    
   }
 
   render() {
-    let values = [["Day of the Week", "Happiness Level"]];
-    this.state.timeline.forEach(note => {
-      let point = [note.timestamp, note.score.compound]
-      values.push(point);
-    });
-    
+    console.log(this.state.timeline.length)
+    let values = [["Day of the Week", "Mental Wellbeing", { role: "tooltip", type: "string", p: { html: true } }]];
+    for( let j=15; j < this.state.timeline.length; j++) {
+      let point = [
+        this.state.timeline[j].timestamp, 
+        this.state.timeline[j].score.compound, 
+        `<b>${this.state.timeline[j].title}</b><br><i>Mental Wellbeing: </i> ${this.state.timeline[j].score.compound}`];
+      if( j < 22) values.push(point);
+      
+    }
+    this.getWeekMood(values);
     return (
       <div className="App">
         <Modal visible={this.state.popupVisible} width="600" effect="fadeInUp" onClickAway={() => this.closeModal()}>
@@ -82,6 +105,7 @@ class App extends React.Component {
               width="100%"
               height="50vh"
               options={{
+                tooltip: { isHtml: true, trigger: "visible" },
                 explorer: { axis: 'horizontal', keepInBounds: true },
                 hAxis: {
                   title: '',
