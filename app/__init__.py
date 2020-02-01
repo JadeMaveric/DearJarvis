@@ -4,6 +4,7 @@ from flask_restful import Resource, Api
 import gkeepapi
 
 import nltk
+import sklearn
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -13,7 +14,7 @@ account = {
 }
 
 vectorizer = TfidfVectorizer()
-def getKeyWords(notes):
+def trainModel(notes):
 	corpus = []
 	for note in notes:
 		corpus.append(note.text) 
@@ -25,6 +26,32 @@ sid = SentimentIntensityAnalyzer()
 
 def calcScore(text):
     return sid.polarity_scores(text)
+
+# get a rank of all the keywords depending on their intersections
+def getKeyWords(notes, positive=True):
+	# step 0: score every note depending on the analysis
+	score = [[calcScore(note.text), note.text] for note in notes]
+	# step 1: get all of the notes of a specific compound category
+	if positive == True:
+		texts = [d for d in sorted(score, key=lambda item: item[0]['compound']) if d[0]['compound'] > 0]
+	else:
+		texts = [d for d in sorted(score, key=lambda item: item[0]['compound']) if d[0]['compound'] < 0]
+	# step 2: rank every token in the arrays depending on how common they are...
+	# step 2.1: postag and tokenize each text
+	# step 2.2: then find intersects and rank accordingly
+	tokenized_texts = [nltk.pos_tag(nltk.word_tokenize(text[1])) for text in texts]
+	# added a special filter out everything except certain POS tags(i.e only nouns).
+	pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
+	ranked_tokens = {}
+	for text in tokenized_texts:
+		for token in text:
+			if token[1] in pos_filter:
+				if token in ranked_tokens:
+					ranked_tokens[token] += 1
+				else:
+					ranked_tokens[token] = 1
+	# pass the tokens based on rank, and also pass the number of posts that were used to achieve this evaluation
+	return [d for d in sorted(ranked_tokens.items(), key=lambda item: item[1])], len(texts)
 
 app = Flask(__name__)
 CORS(app)
