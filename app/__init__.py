@@ -43,7 +43,7 @@ def getKeyWords(corpus, positive=True):
 	# step 2.2: then find intersects and rank accordingly
 	tokenized_texts = [nltk.pos_tag(nltk.word_tokenize(text[1])) for text in texts]
 	# added a special filter out everything except certain POS tags(i.e only nouns).
-	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.']
+	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.', 'van']
 	pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
 	ranked_tokens = {}
 	for text in tokenized_texts:
@@ -116,7 +116,7 @@ class Timeline(Resource):
 class Keywords(Resource):
 	def get(self):
 		# Returns an object of keyword:occurences
-		return {'positive': getKeyWords(notes), 'negative': getKeyWords(notes, positive=False)}
+		return {'positive': getKeyWords(notes[15:22]), 'negative': getKeyWords(notes[15:22], positive=False)}
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Refresh, '/refresh')
