@@ -30,6 +30,7 @@ def calcScore(text):
     return sid.polarity_scores(text)
 
 # get a rank of all the keywords depending on their intersections
+# update: using bigrams to see an improvement in contexts over POS tagging
 def getKeyWords(corpus, positive=True):
 	# step 0: score every note depending on the analysis
 	score = [[calcScore(note.text), note.text] for note in corpus]
@@ -39,20 +40,23 @@ def getKeyWords(corpus, positive=True):
 	else:
 		texts = [d for d in sorted(score, key=lambda item: item[0]['compound']) if d[0]['compound'] < 0]
 	# step 2: rank every token in the arrays depending on how common they are...
-	# step 2.1: postag and tokenize each text
+	# step 2.1: tokenize each text and then bigram them
 	# step 2.2: then find intersects and rank accordingly
-	tokenized_texts = [nltk.pos_tag(nltk.word_tokenize(text[1])) for text in texts]
-	# added a special filter out everything except certain POS tags(i.e only nouns).
-	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.']
-	pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
+	bigrammed_texts = []
+	for text in texts:
+		bigrammed_texts.append([d for d in nltk.bigrams(nltk.word_tokenize(text[1]))])
+
+	# We do not need a POS tagger here, since we are trying bigrams.
+	# word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.']
+	# pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
 	ranked_tokens = {}
-	for text in tokenized_texts:
-		for token in text:
-			if token[1] in pos_filter and token[0] not in word_filter:
-				if token[0] in ranked_tokens:
-					ranked_tokens[token[0]] += 1
-				else:
-					ranked_tokens[token[0]] = 1
+	for text in bigrammed_texts:
+		for bigram in text:
+			# if token[1] in pos_filter and token[0] not in word_filter:
+			if bigram in ranked_tokens:
+				ranked_tokens[bigram] += 1
+			else:
+				ranked_tokens[bigram] = 1
 	# pass the tokens based on rank, and also pass the number of posts that were used to achieve this evaluation
 	return {'keywords': [d for d in sorted(ranked_tokens.items(), key=lambda item: item[1], reverse=True)], 'notesScanned': len(texts)}
 
