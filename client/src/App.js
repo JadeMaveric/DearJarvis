@@ -16,12 +16,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log("Requesting timeline data")
     fetch('http://192.168.12.1:5000/notes/timeline')
     .then( res => res.json() )
     .then( (data) => {
-      for( let i=0; i < data.length; i++ ) {
+      for( let i=0; i <data.length; i++ ) {
         let arr = data[i].timestamp;
-        data[i].timestamp = new Date(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]);
+        data[i].timestamp = new Date(arr[0],arr[1]-1,arr[2]);
       }
       this.setState({ timeline: data });
       console.log(this.state.timeline);
@@ -32,11 +33,15 @@ class App extends React.Component {
   }
 
   render() {
-    let values = [["Day of the Week", "Happiness Level"]];
-    this.state.timeline.forEach( note => {
-      let point = [note.timestamp, note.score.compound]
-      values.push(point);
-    });
+    console.log(this.state.timeline.length)
+    let values = [["Day of the Week", "Mental Wellbeing", { role: "tooltip", type: "string", p: { html: true } }]];
+    for( let j=15; j < this.state.timeline.length; j++) {
+      let point = [
+        this.state.timeline[j].timestamp, 
+        this.state.timeline[j].score.compound, 
+        `<b>${this.state.timeline[j].title}</b><br><i>Mental Wellbeing: </i> ${this.state.timeline[j].score.compound}`];
+      if( j < 22) values.push(point);
+    }
     return (
       <div className="App">
         <div className="braini">
@@ -58,7 +63,7 @@ class App extends React.Component {
               width="100%"
               height="72vh"
               options={{
-                explorer: {axis: 'horizontal', keepInBounds: true},
+                tooltip: { isHtml: true, trigger: "visible" },
                 hAxis: {
                   title: '',
 
