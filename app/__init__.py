@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Resource, Api
 import gkeepapi
 
@@ -26,6 +27,7 @@ def calcScore(text):
     return sid.polarity_scores(text)
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 # Register the user
@@ -66,7 +68,7 @@ class Note(Resource):
 class Timeline(Resource):
     def get(self):
         # Build an array of {note.title, note.timestamp, note.sentiment, note.link}
-        timeline = [1, 2, 3]
+        timeline = []
         print("Notes", notes)
         for note in notes:
             entry = {
@@ -93,4 +95,4 @@ test = keep.all()
 print(f"Found {len(test)} notes")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
