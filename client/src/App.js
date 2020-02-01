@@ -1,20 +1,23 @@
 import React from 'react';
 import { Chart } from 'react-google-charts';
-import Happy from './positive.png';
-import Sad from './meh.png';
-import Angry from './neg.png';
-import Brain from './brain.png';
+import Happy from './udhappy.png';
+import Angry from './udsad.png';
 
-
+import Modal from 'react-awesome-modal';
 import './App.css';
 
 class App extends React.Component {
   state = {
     unit: 'week',
     timeline: [],
-
+    popupVisible: true,
   }
 
+  closeModal() {
+    this.setState({
+      popupVisible: false
+    });
+  }
   componentDidMount() {
     console.log("Requesting timeline data")
     fetch('http://192.168.12.1:5000/notes/timeline')
@@ -44,26 +47,31 @@ class App extends React.Component {
     }
     return (
       <div className="App">
-        <div className="braini">
-          <image className="bigbrn" src={Brain}/>
-        </div>
+        <Modal visible={this.state.popupVisible} width="600" effect="fadeInUp" onClickAway={() => this.closeModal()}>
+          <div class="popup">
+            <h4>Looks like someone had an awesome week!</h4>
+            <p>Bruh</p>
+            <a href="javascript:void(0);" onClick={() => this.closeModal()}>See your mental health stats</a>
+          </div>
+        </Modal>
         <div class="jumbotron jumbotron-fluid">
-          <h1 class="display-4">Let's take a look<br />&emsp;&emsp;at your {this.state.unit}.</h1>
+          <h1 class="display-4"> Appname.</h1>
+          <p class="lead">something something somethnig</p>
         </div>
         <div className="container">
-          <h4 className="summary">Looks like someone's {this.state.unit} was awesome!</h4>
+          {/* <h4 className="summary">Looks like someone's {this.state.unit} was awesome!</h4> */}
           {//subject to change
           }
-          <br />
           <h4 className="moodsum">Let's look at your mood for the {this.state.unit}</h4>
           <div className="mood-chart">
             <Chart
               chartType="LineChart"
               data={values}
               width="100%"
-              height="72vh"
+              height="50vh"
               options={{
                 tooltip: { isHtml: true, trigger: "visible" },
+                explorer: { axis: 'horizontal', keepInBounds: true },
                 hAxis: {
                   title: '',
 
@@ -80,10 +88,10 @@ class App extends React.Component {
           </div>
 
           <br />
-          <h4 className="emo-head">Here's what we think causes your moods</h4>
+          <h4 className="emo-head">This is what makes you happy.</h4>
           <div className="emo-container">
-            <div className="happydiv"> 
-              <img className="posimg" src={Happy}/>
+            <div className="happydiv">
+              <img className="posimg" src={Happy} />
             </div>
             <div className="pos-box">
               <ul>
@@ -93,7 +101,7 @@ class App extends React.Component {
                 <li> ice-cream</li>
               </ul>
             </div>
-            <div className="mehdiv"> 
+            {/* <div className="mehdiv"> 
               <img className="mehimg" src={Sad}/> 
             </div>
             <div className="meh-box">
@@ -103,9 +111,10 @@ class App extends React.Component {
                 <li> driving</li>
                 <li> driving</li>
               </ul>
-            </div>
-            <div className="negdiv"> 
-              <img className="negimg" src={Angry}/>
+            </div> */}
+            <h4 className="emo-head1">This is what makes you Sad.</h4>
+            <div className="negdiv">
+              <img className="negimg" src={Angry} />
             </div>
             <div className="neg-box">
               <ul>
