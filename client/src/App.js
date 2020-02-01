@@ -1,31 +1,52 @@
 import React from 'react';
-import { Chart } from "react-google-charts";
-
+import { Chart } from 'react-google-charts';
 import './App.css';
 
 class App extends React.Component {
   state = {
     unit: 'week',
+    timeline: [],
+
   }
 
+  componentDidMount() {
+    fetch('http://192.168.12.1:5000/notes/timeline')
+    .then( res => res.json() )
+    .then( (data) => {
+      for( let i=0; i < data.length; i++ ) {
+        let arr = data[i].timestamp;
+        data[i].timestamp = new Date(arr[0],arr[1],arr[2],arr[3],arr[4],arr[5]);
+      }
+      this.setState({ timeline: data });
+      // console.log(this.state.timeline);
+    })
+    .catch(console.log)
+  }
 
   render() {
+    let values = [["Day of the Week", "Happiness Level"]];
+    this.state.timeline.forEach( note => {
+      let point = [note.timestamp, note.score.compound]
+      values.push(point);
+    });
     return (
       <div className="App">
-        <div class="jumbotron jumbotron-fluid">
-            <h1 class="display-4">Let's take a look<br />&emsp;&emsp;at your {this.state.unit}.</h1>
+        {//this.timeStampMaker(this.state.timeline[0].timestamp)}
+        }<div class="jumbotron jumbotron-fluid">
+          <h1 class="display-4">Let's take a look<br />&emsp;&emsp;at your {this.state.unit}.</h1>
         </div>
         <div className="container">
           <h4 className="summary ">Looks like someone's {this.state.unit} was awesome!</h4>
           <br />
-          <h4>Let's look at your mood for the {this.state.unit}</h4>
+          <h4 className="moodsum">Let's look at your mood for the {this.state.unit}</h4>
           <div className="mood-chart">
             <Chart
               chartType="LineChart"
-              data={[["Day of the Week", "Happiness Levels"], [new Date(2020, 1, 1), 5], [new Date(2020, 1, 2), -3], [new Date(2020, 1, 3), -7], [new Date(2020, 1, 4), 5], [new Date(2020, 1, 5), -1], [new Date(2020, 1, 6), 0], [new Date(2020, 1, 7), 5]]}
+              data={values}
               width="100%"
               height="400px"
               options={{
+                explorer: {axis: 'horizontal', keepInBounds: true},
                 hAxis: {
                   title: '',
 
@@ -43,11 +64,7 @@ class App extends React.Component {
 
           <br />
           <h4>Here's what we think causes your moods</h4>
-          <div className="temp">
-            { //FOR KUNAL
-              // Make a table with mood images on one side and causes on the other
-            }
-          </div>
+          
           <br />
           <h4>We noticed that you care about these a lot</h4>
           <div className="desire-chart">
@@ -67,7 +84,19 @@ class App extends React.Component {
                 ['', 68, 477, 80],
               ]}
               options={{
-                colorAxis: { colors: ['yellow', 'red'] },
+                colorAxis: { colors: ['#00fff0', 'red'] },
+                vAxis: {
+                  gridlines: {
+                    color: 'transparent',
+                    textPosition: 'none',
+                  }
+                },
+                hAxis: {
+                  gridlines: {
+                    color: 'transparent',
+                    textPosition: 'none',
+                  }
+                }
               }}
               rootProps={{ 'data-testid': '2' }}
             />
