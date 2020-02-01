@@ -1,47 +1,183 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,700,600&display=swap');
 
+
 .App
 {
   font-family: 'Poppins', sans-serif;
 }
 
+.bigbrn{
+    width: 50%;
+    z-index: 10;
+}
+
+.braini{
+    position: absolute;
+}
+
 .jumbotron{
     background-color: rgb(89, 89, 179);
-    padding-left: 7em;
+    padding-left: 7vw;
     padding-bottom: 0.1em;
-    box-shadow: 0em 1em 1em #c2c2c2;
+    box-shadow: 0em 0.6em 0.5em #c2c2c2;
 }
 
 .display-4{
     color: white;
+    font-size: max(6vw, 1em);
+}
+
+.container{
+    margin-top: 9em;
+    text-align: center;
+    position: relative;
 }
 
 
-
-
-
-/*.summary
-{
-  text-align: center;
-  padding:0.7em;
-  border-radius: 0.5em;
-  background-color: rgb(255, 0, 0) ;   to be replaced with variable 
-  box-sizing: border-box;
-  color: rgb(255, 255, 255);
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0em 0.2em #cecece;
-  font-size: 1.6em;
-  font-weight: 600 ;
-}*/
-
-
-
-
-
-
-.temp
-{
-  height: 200px;
-  background-color: rgb(151, 151, 151);
+.summary{
+    font-size: 2.5em;
+    padding: 0.5em;
+    border-style: solid;
+    border-width: 3px;
+    box-sizing: border-box;
+    width:80%;
+    margin: auto;
+    border-color: rgb(89, 89, 179);
+    border-radius: 0.6em;
 }
-/* can delete this one later */
+
+.moodsum{
+    position: relative;
+    margin-top: 3.5em;
+    font-size: 1.8em;
+}
+
+
+.mood-chart{
+
+    border: 1vh solid rgb(89, 89, 179) ;
+    padding-bottom: 1.8em;
+    box-sizing: border-box;
+    border-radius: 0.6em;
+    align-items: center;
+    display: flex;
+    margin-top: 10vh;
+}
+
+.emo-head{
+    margin-top: 17vh;
+    font-size: 2.3em;
+}
+
+.emo-container{
+    margin-top: 15vh;
+    padding: 1em;
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: 27vh 27vh 27vh;
+}
+
+.pos-box{
+    padding: 0.5em;
+    grid-column: 2/4;
+    grid-row: 1/2;
+    align-items: center;
+    display: flex;
+
+}
+
+.meh-box{
+    grid-column: 2/4;
+    grid-row: 2/3;
+    padding: 0.5em;
+    align-items: center;
+    display: flex;
+
+}
+
+.neg-box{
+    grid-column: 2/4;
+    grid-row: 3/4;
+    padding: 0.5em;
+    align-items: center;
+    display: flex;
+
+}
+
+.pos-box ul li{
+    list-style: none;
+    float: left;
+    margin: 0.5em;
+    background-color: rgb(88, 204, 120);
+    border-radius: 5px;
+    padding: 0.5em 0.7em;
+    font-size: 1.5em;
+    color: white;
+    display: flex;
+}
+
+.meh-box ul li{
+    list-style: none;
+    float: left;
+    margin: 0.5em;
+    background-color: rgb(236, 179, 20);
+    border-radius: 5px;
+    padding: 0.5em 0.7em;
+    font-size: 1.5em;
+    color: white;
+    display: flex;
+}
+
+.neg-box ul li{
+    list-style: none;
+    float: left;
+    margin: 0.5em;
+    background-color: rgb(255, 0 ,0);
+    border-radius: 5px;
+    padding: 0.5em 0.7em;
+    font-size: 1.5em;
+    color: white;
+    display: flex;
+}
+
+
+.happydiv{
+    grid-column: 1/2;
+    grid-row: 1/2;
+    padding: 10px;
+    align-items: center;
+    justify-items: center;
+}
+
+.mehdiv
+{
+    grid-column: 1/2;
+    grid-row: 2/3;
+    padding: 10px;
+    align-items: center;
+    justify-items: center;
+}
+
+.negdiv{
+    grid-column: 1/2;
+    grid-row: 3/4;
+    padding: 10px;
+    align-items: center;
+    justify-items: center;
+}
+
+
+.posimg{
+  width: 50%;
+}
+
+.mehimg
+{
+    width: 50%;
+}
+
+.negimg
+{
+  width: 50%;
+}
+
