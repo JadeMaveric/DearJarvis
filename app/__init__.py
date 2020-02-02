@@ -27,7 +27,7 @@ nltk.download('averaged_perceptron_tagger')
 sid = SentimentIntensityAnalyzer()
 
 def calcScore(text):
-    return sid.polarity_scores(text)
+	return sid.polarity_scores(text)
 
 # get a rank of all the keywords depending on their intersections
 # update: using bigrams to see an improvement in contexts over POS tagging
@@ -70,57 +70,57 @@ keep.login(account['user'], account['password'])
 
 notes = []
 def refresh():
-    keep.sync()
-    gnotes = keep.all()#find(labels=[keep.findLabel('AnneFrank')])
-    for note in gnotes:
-        notes.append(note)
-    print(notes)
+	keep.sync()
+	gnotes = keep.find(labels=[keep.findLabel('AnneFrank')])
+	for note in gnotes:
+		notes.append(note)
 
 # Get relevant notes
 class Refresh(Resource):
-    def get(self):
-        refresh()
+	def get(self):
+		refresh()
 
 class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
+	def get(self):
+		return {'hello': 'world'}
 
 class Note(Resource):
-    def get(self, note_id):
-        note = keep.get(note_id)
-        score = calcScore(note.text)
-        return {
-            'title': note.title,
-            'text': note.text,
-            'score': score, 
-            'timestamps': {
-                'create': note.timestamps.created.timetuple(),
-                'edited': note.timestamps.edited.timetuple()
-            }
-        }
+	def get(self, note_id):
+		note = keep.get(note_id)
+		score = calcScore(note.text)
+		return {
+			'title': note.title,
+			'text': note.text,
+			'score': score, 
+			'timestamps': {
+				'create': note.timestamps.created.timetuple(),
+				'edited': note.timestamps.edited.timetuple()
+			}
+		}
 
 class Timeline(Resource):
-    def get(self):
-        # Build an array of {note.title, note.timestamp, note.sentiment, note.link}
-        timeline = []
-        print("Notes", notes)
-        for note in notes:
-            entry = {
-                'id': note.id,
-                'timestamp': note.timestamps.created.timetuple(),
-                'title': note.title,
-                'score': calcScore(note.text)
-            }
-            print(entry)
-            print("Hello")
-            timeline.insert(0, entry)
-        print(timeline)
-        return timeline
+	def get(self):
+		# Build an array of {note.title, note.timestamp, note.sentiment, note.link}
+		#start_day = (int(start_day[0:4]), int(start_day[4:6]), int(start_day[6:]))
+		timeline = []
+		for note in notes:
+			print(note)
+			entry = {
+				'id': note.id,
+				'timestamp': (int(note.text[0:4]), int(note.text[5:7]), int(note.text[8:10])),
+				'title': note.title,
+				'score': calcScore(note.text)
+			}
+			#print( entry['timestamp'], start_day, entry['timestamp'] < start_day)
+			#if entry['timestamp'] > start_day:
+			timeline.insert(0, entry)
+		timeline.sort(key=lambda x: x['timestamp'])
+		return timeline
 
 class Keywords(Resource):
-    def get(self):
-        # Returns an object of keyword:occurences
-        return {'positive': getKeyWords(notes), 'negative': getKeyWords(notes, positive=False)}
+	def get(self):
+		# Returns an object of keyword:occurences
+		return {'positive': getKeyWords(notes[15:22]), 'negative': getKeyWords(notes[15:22], positive=False)}
 
 api.add_resource(HelloWorld, '/')
 api.add_resource(Refresh, '/refresh')
@@ -132,7 +132,7 @@ api.add_resource(Keywords, '/notes/keywords')
 # Refresh the list
 refresh()
 test = keep.all()
-print(f"Found {len(test)} notes")
+print(f"Found {len(notes)}/{len(test)} relevant notes")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+	app.run(host='0.0.0.0', debug=True)

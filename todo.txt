@@ -1,0 +1,2 @@
+(A) 2020-02-03 Add server and app setup instructions to +README
+2020-02-03 Add an +editor to the app which allows the user to directly start jotting journal entries while displaying the current assumptions being made about their entry, which can be customised/changed by the user too. @suggestion
