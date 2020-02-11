@@ -1,3 +1,4 @@
+(A) 2020-02-11 @JadeMaveric add proper tags and other stuff to this repo.
 (A) 2020-02-03 Add server and app setup instructions to +README
 (A) 2020-02-03 Add badges to +README
-2020-02-03 Add an +editor to the app which allows the user to directly start jotting journal entries while displaying the current assumptions being made about their entry, which can be customised/changed by the user too. @suggestion
+2020-02-03 Add an +editor to the app which allows the user to directly start jotting journal entries while displaying the current assumptions being made about their entry, which can be customised/changed by the user too. @suggestion by @yashdiniz
