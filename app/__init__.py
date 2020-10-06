@@ -1,30 +1,33 @@
+# REST API packages
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Resource, Api
 import gkeepapi
-
+# NLP packages
 import nltk
 import sklearn
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+nltk.download('vader_lexicon')
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+sid = SentimentIntensityAnalyzer()
 account = {
 	'user': 'introspecthack@gmail.com',
-	'password': 'Kyjus2020',
+	'password': 'Kyjus2020', # Do not use password in production. Use app password or oAuth.
 }
-
+# Register the user
+keep = gkeepapi.Keep()
+keep.login(account['user'], account['password'])
 vectorizer = TfidfVectorizer()
+
 def trainModel(notes):
 	corpus = []
 	for note in notes:
 		corpus.append(note.text) 
 	model = vectorizer.fit_transform(corpus)
 	return vectorizer.get_feature_names(), model	# also returns model
-
-nltk.download('vader_lexicon')
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-sid = SentimentIntensityAnalyzer()
 
 def calcScore(text):
 	return sid.polarity_scores(text)
@@ -43,7 +46,7 @@ def getKeyWords(corpus, positive=True):
 	# step 2.2: then find intersects and rank accordingly
 	tokenized_texts = [nltk.pos_tag(nltk.word_tokenize(text[1])) for text in texts]
 	# added a special filter out everything except certain POS tags(i.e only nouns).
-	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.', 'van']
+	word_filter = ['Mr.', 'Mrs.', 'i', 'Dr.', 'van', 'Daan']
 	pos_filter = ['NN', 'NNP', 'NNPS', 'NNS']
 	ranked_tokens = {}
 	for text in tokenized_texts:
@@ -59,10 +62,6 @@ def getKeyWords(corpus, positive=True):
 app = Flask(__name__)
 CORS(app)
 api = Api(app)
-
-# Register the user
-keep = gkeepapi.Keep()
-keep.login(account['user'], account['password'])
 
 notes = []
 def refresh():
